@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecentraBlog - Blockchain-Verified Posts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --surface: #fafaf8;
+            --accent: #c8a96e;
+            --text-primary: #000000;
+            --text-secondary: #555555;
+            --text-muted: #999999;
+            --border: #e8e8e8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --dark: #1a1a1a;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Playfair Display", serif;
+        }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--bg);
+        }
+
+        .nav-logo {
+            font-family: "Playfair Display", serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo-accent {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            flex: 1;
+            justify-content: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .did-pill {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: #f0fdf4;
+            border: 1px solid var(--success);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-family: "Space Mono", monospace;
+        }
+
+        .did-pill.visible {
+            display: flex;
+        }
+
+        .did-pill-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .btn-primary {
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #333333;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: 54px;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            font-weight: 400;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 48px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: "Playfair Display", serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* ===== COMPOSE BAR ===== */
+        .compose-bar {
+            display: none;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 40px;
+            margin-bottom: 0;
+        }
+
+        .compose-bar.visible {
+            display: block;
+        }
+
+        .compose-fields {
+            display: grid;
+            grid-template-columns: 1fr 2fr auto;
+            gap: 12px;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+
+        .compose-input {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            background: white;
+        }
+
+        .compose-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        textarea.compose-input {
+            min-height: 80px;
+            resize: vertical;
+            grid-column: 1 / -1;
+        }
+
+        .compose-note {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: "Space Mono", monospace;
+            text-align: right;
+            padding-right: 12px;
+        }
+
+        /* ===== POSTS SECTION ===== */
+        .posts-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .posts-header {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+            font-weight: 600;
+        }
+
+        .post-card {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            padding-bottom: 32px;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border);
+            align-items: start;
+        }
+
+        .post-image {
+            width: 280px;
+            height: 175px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #f7f3ed 0%, #f7f3ed 100%);
+            flex-shrink: 0;
+        }
+
+        .post-image.color-1 { background: #f7f3ed; }
+        .post-image.color-2 { background: #edf4f0; }
+        .post-image.color-3 { background: #edf2f8; }
+        .post-image.color-4 { background: #fdf3f3; }
+
+        .post-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .post-date {
+            color: var(--text-muted);
+        }
+
+        .post-badge {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .post-badge-verified {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .post-title {
+            font-family: "Playfair Display", serif;
+            font-size: 26px;
+            font-weight: 400;
+            line-height: 1.3;
+            color: var(--text-primary);
+            transition: color 0.2s;
+            margin: 8px 0;
+        }
+
+        .post-title:hover {
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .post-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .post-author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-author-did {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .post-read-link {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+
+        .post-read-link:hover {
+            color: var(--accent);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .post-verify-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .post-verify-link:hover {
+            color: var(--text-primary);
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 32px 40px;
+            border-top: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .pagination-btn {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .pagination-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .pagination-btn.active {
+            background: var(--dark);
+            color: white;
+            border-color: var(--dark);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            text-align: center;
+        }
+
+        footer .nav-logo {
+            text-align: left;
+            font-size: 18px;
+        }
+
+        .footer-copyright {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: flex-end;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 460px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-title {
+            font-family: "Playfair Display", serif;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .modal-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .modal-field label {
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+        }
+
+        .modal-field input,
+        .modal-field textarea {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px 12px;
+            font-family: "Inter", sans-serif;
+            font-size: 13px;
+            background: white;
+        }
+
+        .modal-field input:focus,
+        .modal-field textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .key-box {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .key-box.public-key {
+            background: rgba(34, 197, 94, 0.05);
+            border-color: var(--success);
+        }
+
+        .key-box.private-key {
+            background: rgba(239, 68, 68, 0.05);
+            border-color: var(--error);
+        }
+
+        .key-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .key-box.public-key .key-label {
+            color: var(--success);
+        }
+
+        .key-box.private-key .key-label {
+            color: var(--error);
+        }
+
+        .key-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 2px solid var(--error);
+            padding: 8px 12px;
+            font-size: 11px;
+            color: var(--error);
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+
+        .did-display {
+            background: #fdf9f0;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .did-display label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .did-display .did-text {
+            font-family: "Space Mono", monospace;
+            font-size: 12px;
+            color: var(--accent);
+            word-break: break-all;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        /* Progress Steps */
+        .tx-progress {
+            display: none;
+        }
+
+        .tx-progress.visible {
+            display: block;
+        }
+
+        .progress-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .progress-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .progress-step.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .progress-step.active .step-circle {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .step-detail {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: "Space Mono", monospace;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .tx-result {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .tx-result.visible {
+            display: block;
+        }
+
+        .tx-result-title {
+            font-weight: 600;
+            color: var(--success);
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .tx-result-hash {
+            font-family: "Space Mono", monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: var(--dark);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 4px;
+            z-index: 2000;
+            animation: slideUp 0.3s ease-out;
+            min-width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .toast-body {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .stats-row {
+                gap: 40px;
+                flex-wrap: wrap;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .post-card {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .post-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .posts-container {
+                padding: 0 20px;
+            }
+
+            .compose-bar {
+                margin: 20px;
+            }
+
+            .compose-fields {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            footer .nav-logo {
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+
+            .modal {
+                padding: 24px;
+                max-width: 90%;
+            }
+
+            .toast {
+                right: 16px;
+                bottom: 16px;
+                min-width: auto;
+                width: calc(100% - 32px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-logo">Decentra<span class="nav-logo-accent">Blog</span></div>
+        <ul class="nav-links">
+            <li><a href="#explore">Explore</a></li>
+            <li><a href="#about">About DID</a></li>
+            <li><a href="#how">How It Works</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="did-pill" id="didPill">
+                <div class="did-pill-dot"></div>
+                <span id="didPillText"></span>
+            </div>
+            <button class="btn-primary" id="registerDIDBtn">Register DID</button>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-eyebrow">Ethereum Blockchain · Self-Sovereign Identity</div>
+        <h1>Read Our Blog</h1>
+        <p class="hero-subtitle">Every post on DecentraBlog is signed with the author's private key and anchored to the Ethereum blockchain. Register a DID, write, and publish — your identity, your words, your chain.</p>
+
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-number" id="statDIDs">0</div>
+                <div class="stat-label">DIDs Registered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="statPosts">0</div>
+                <div class="stat-label">Posts Published</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="statVerified">0</div>
+                <div class="stat-label">Verified On-Chain</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPOSE BAR -->
+    <div class="compose-bar" id="composeBar">
+        <div class="compose-fields">
+            <input type="text" class="compose-input" id="composeTitle" placeholder="Post Title">
+            <textarea class="compose-input" id="composeBody" placeholder="Write your post here..."></textarea>
+            <input type="text" class="compose-input" id="composeTags" placeholder="Tags (comma-separated)">
+            <span class="compose-note">ECDSA signed on publish</span>
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button class="btn-primary" id="publishBtn">Publish Post</button>
+        </div>
+    </div>
+
+    <!-- POSTS SECTION -->
+    <div class="posts-container">
+        <div class="posts-header">Latest Posts</div>
+        <div id="postsList"></div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" id="pagination"></div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="nav-logo">Decentra<span class="nav-logo-accent">Blog</span></div>
+        <div class="footer-copyright">&copy; 2026 DecentraBlog. Decentralized identity at scale.</div>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">GitHub</a>
+            <a href="#">API Docs</a>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Register DID Modal -->
+    <div class="modal-overlay" id="registerDIDModal">
+        <div class="modal">
+            <h2 class="modal-title">Register Your DID</h2>
+            <p class="modal-subtitle">Generate a secp256k1 key pair and register your decentralized identity on the Ethereum blockchain.</p>
+
+            <div id="registerForm" style="display: block;">
+                <div class="modal-field">
+                    <label>Display Name</label>
+                    <input type="text" id="displayName" placeholder="Your name or pseudonym">
+                </div>
+                <div class="modal-field">
+                    <label>Bio (Optional)</label>
+                    <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn-secondary" onclick="closeModal('registerDIDModal')">Cancel</button>
+                    <button class="btn-primary" style="flex: 1;" onclick="app.generateKeys()">Generate Keys</button>
+                </div>
+
+                <div style="margin: 24px 0 16px; border-top: 1px solid var(--border);"></div>
+                <p class="modal-subtitle" style="margin-bottom: 12px;">Already have a DID? Restore it to unlock publishing.</p>
+                <div class="modal-field">
+                    <label>Existing DID</label>
+                    <input type="text" id="existingDid" placeholder="did:eth:0x...">
+                </div>
+                <div class="modal-field">
+                    <label>Private Key</label>
+                    <input type="password" id="existingPrivateKey" placeholder="0x...">
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-secondary" style="flex: 1;" onclick="app.restoreExistingDID()">Use Existing DID</button>
+                </div>
+            </div>
+
+            <div id="keysDisplay" style="display: none;">
+                <div class="key-box public-key">
+                    <span class="key-label">✓ Public Key</span>
+                    <div id="publicKeyDisplay"></div>
+                </div>
+                <div class="key-box private-key">
+                    <span class="key-label">Private Key (Keep Safe!)</span>
+                    <div id="privateKeyDisplay"></div>
+                    <div class="key-warning">Never share your private key. Save it in a secure location.</div>
+                </div>
+                <div class="did-display">
+                    <label>Your DID</label>
+                    <div class="did-text" id="didDisplay"></div>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-secondary" onclick="app.backToNameForm()">Back</button>
+                    <button class="btn-primary" style="flex: 1;" onclick="app.registerDIDOnChain()">Register on Chain</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TX Progress Modal -->
+    <div class="modal-overlay" id="txProgressModal">
+        <div class="modal">
+            <h2 class="modal-title" id="txProgressTitle">Publishing to Blockchain</h2>
+            
+            <div id="txProgressContent" class="tx-progress visible">
+                <div class="progress-steps" id="progressSteps"></div>
+                <div class="tx-result" id="txResult">
+                    <div class="tx-result-title" id="txResultTitle">✓ Transaction Successful</div>
+                    <div class="tx-result-hash" id="txResultHash"></div>
+                </div>
+                <button class="btn-primary" onclick="closeModal('txProgressModal')" id="txDoneBtn" style="width: 100%; display: none;">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verify Post Modal -->
+    <div class="modal-overlay" id="verifyPostModal">
+        <div class="modal">
+            <h2 class="modal-title" id="verifyProgressTitle">Verify Post Signature</h2>
+            <p class="modal-subtitle" id="verifySubtitle">Checking signature validity...</p>
+
+            <div id="verifyProgressContent" class="tx-progress visible">
+                <div class="progress-steps" id="verifyProgressSteps"></div>
+                <div class="tx-result" id="verifyResult">
+                    <div class="tx-result-title" id="verifyResultTitle">✓ Signature Valid</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                        <div><strong>Recovered Address:</strong></div>
+                        <div class="tx-result-hash" id="verifyRecoveredAddress"></div>
+                        <div style="margin-top: 8px;"><strong>Author's DID:</strong></div>
+                        <div class="tx-result-hash" id="verifyAuthorDID"></div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="closeModal('verifyPostModal')" id="verifyDoneBtn" style="width: 100%; display: none;">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" style="display: none;">
+        <div class="toast-title" id="toastTitle"></div>
+        <div class="toast-body" id="toastBody"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        const COLORS = ['color-1', 'color-2', 'color-3', 'color-4'];
+
+        const app = {
+            state: {
+                did: null,
+                address: null,
+                publicKey: null,
+                privateKey: null,
+                displayName: null,
+                posts: [],
+                currentPage: 1,
+                postsPerPage: 10
+            },
+
+            // ===== INITIALIZATION =====
+            async init() {
+                console.log('DecentraBlog initializing...');
+                await this.loadStats();
+                await this.loadPosts();
+                this.setupEventListeners();
+            },
+
+            setupEventListeners() {
+                document.getElementById('registerDIDBtn').addEventListener('click', () => openModal('registerDIDModal'));
+                document.getElementById('publishBtn').addEventListener('click', () => this.publishPost());
+            },
+
+            // ===== DID MANAGEMENT =====
+            async generateKeys() {
+                try {
+                    this.showNotification('Generating keypair...', 'Generating secp256k1 key pair');
+                    
+                    const response = await fetch(`${API_BASE}/did/generate`, { method: 'POST' });
+                    const data = await response.json();
+
+                    this.state.privateKey = data.private_key;
+                    this.state.publicKey = data.public_key;
+                    this.state.address = data.address;
+                    this.state.did = data.did;
+
+                    // Display keys
+                    document.getElementById('publicKeyDisplay').textContent = data.public_key;
+                    document.getElementById('privateKeyDisplay').textContent = data.private_key;
+                    document.getElementById('didDisplay').textContent = data.did;
+
+                    // Toggle forms
+                    document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('keysDisplay').style.display = 'block';
+
+                    this.showNotification('Keys Generated', 'Successfully generated your keypair');
+                } catch (error) {
+                    console.error('Error generating keys:', error);
+                    this.showNotification('Error', 'Failed to generate keys');
+                }
+            },
+
+            backToNameForm() {
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('keysDisplay').style.display = 'none';
+                this.state.privateKey = null;
+                this.state.publicKey = null;
+            },
+
+            async registerDIDOnChain() {
+                try {
+                    const displayName = document.getElementById('displayName').value.trim();
+                    const bio = document.getElementById('bio').value.trim();
+
+                    if (!displayName) {
+                        this.showNotification('Error', 'Display name is required');
+                        return;
+                    }
+
+                    this.state.displayName = displayName;
+
+                    // Show TX progress
+                    this.showTXProgress('Registering DID', 5);
+
+                    // Simulate steps
+                    await this.simulateStep(0, 1500);
+                    await this.simulateStep(1, 1500);
+                    await this.simulateStep(2, 1500);
+                    await this.simulateStep(3, 1500);
+
+                    // Register on backend
+                    const response = await fetch(`${API_BASE}/did/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            did: this.state.did,
+                            public_key: this.state.publicKey,
+                            address: this.state.address,
+                            display_name: displayName,
+                            bio: bio,
+                            private_key: this.state.privateKey
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Registration failed');
+
+                    await this.simulateStep(4, 1500);
+
+                    // Show result
+                    document.getElementById('txResultTitle').textContent = '✓ DID Registered';
+                    document.getElementById('txResultHash').textContent = `DID: ${result.did}`;
+                    document.getElementById('txResult').classList.add('visible');
+                    document.getElementById('txDoneBtn').style.display = 'block';
+
+                    // Update UI
+                    closeModal('registerDIDModal');
+                    this.updateNavBar();
+                    this.showComposeBar();
+                    await this.loadStats();
+
+                    this.showNotification('Success!', 'Your DID has been registered');
+                } catch (error) {
+                    console.error('Error registering DID:', error);
+                    this.showNotification('Error', error.message);
+                }
+            },
+
+            async restoreExistingDID() {
+                try {
+                    const did = document.getElementById('existingDid').value.trim();
+                    const privateKey = document.getElementById('existingPrivateKey').value.trim();
+
+                    if (!did || !did.startsWith('did:eth:')) {
+                        this.showNotification('Error', 'Enter a valid DID (did:eth:0x...)');
+                        return;
+                    }
+
+                    if (!privateKey || !privateKey.startsWith('0x')) {
+                        this.showNotification('Error', 'Enter the private key for this DID');
+                        return;
+                    }
+
+                    const address = did.replace('did:eth:', '');
+                    const response = await fetch(`${API_BASE}/did/resolve/string/${encodeURIComponent(did)}`);
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.error || 'Could not resolve DID');
+                    }
+
+                    this.state.did = result.did;
+                    this.state.address = result.address || address;
+                    this.state.privateKey = privateKey;
+                    this.state.displayName = result.display_name || 'Author';
+
+                    const verificationMethod = result.did_document?.verificationMethod || [];
+                    this.state.publicKey = verificationMethod.length > 0 ? verificationMethod[0].publicKeyHex : null;
+
+                    this.updateNavBar();
+                    this.showComposeBar();
+                    closeModal('registerDIDModal');
+                    this.showNotification('Identity Restored', `Publishing unlocked for ${this.state.did.substring(0, 18)}...`);
+                } catch (error) {
+                    console.error('Error restoring DID:', error);
+                    this.showNotification('Error', error.message || 'Failed to restore DID');
+                }
+            },
+
+            // ===== POSTS =====
+            async publishPost() {
+                try {
+                    if (!this.state.did) {
+                        this.showNotification('Error', 'Please register a DID first');
+                        return;
+                    }
+
+                    if (!this.state.privateKey) {
+                        this.showNotification('Error', 'Please restore your DID private key first');
+                        return;
+                    }
+
+                    const title = document.getElementById('composeTitle').value.trim();
+                    const body = document.getElementById('composeBody').value.trim();
+                    const tags = document.getElementById('composeTags').value.trim();
+
+                    if (!title || !body) {
+                        this.showNotification('Error', 'Title and body are required');
+                        return;
+                    }
+
+                    this.showTXProgress('Publishing Post', 5);
+
+                    // Simulate steps
+                    await this.simulateStep(0, 1000);
+                    await this.simulateStep(1, 1000);
+                    await this.simulateStep(2, 1000);
+                    await this.simulateStep(3, 1000);
+
+                    // Publish post
+                    const response = await fetch(`${API_BASE}/posts/publish`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: title,
+                            body: body,
+                            tags: tags,
+                            author_did: this.state.did,
+                            author_address: this.state.address,
+                            private_key: this.state.privateKey
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Publication failed');
+
+                    await this.simulateStep(4, 1000);
+
+                    // Show result
+                    document.getElementById('txResultTitle').textContent = '✓ Post Published';
+                    document.getElementById('txResultHash').textContent = `Post ID: ${result.post_id}`;
+                    document.getElementById('txResult').classList.add('visible');
+                    document.getElementById('txDoneBtn').style.display = 'block';
+
+                    // Clear form
+                    document.getElementById('composeTitle').value = '';
+                    document.getElementById('composeBody').value = '';
+                    document.getElementById('composeTags').value = '';
+
+                    // Reload posts
+                    closeModal('txProgressModal');
+                    await this.loadPosts();
+                    await this.loadStats();
+
+                    this.showNotification('Success!', 'Your post has been published');
+                } catch (error) {
+                    console.error('Error publishing post:', error);
+                    this.showNotification('Error', error.message);
+                }
+            },
+
+            async verifyPost(postId) {
+                try {
+                    this.showVerifyProgress(postId);
+
+                    // Simulate verification steps
+                    await this.simulateStep(0, 800, 'verify');
+                    await this.simulateStep(1, 800, 'verify');
+                    await this.simulateStep(2, 800, 'verify');
+
+                    // Fetch verification result
+                    const response = await fetch(`${API_BASE}/posts/${postId}/verify`);
+                    const result = await response.json();
+
+                    await this.simulateStep(3, 800, 'verify');
+
+                    // Show result
+                    if (result.valid) {
+                        document.getElementById('verifyResultTitle').textContent = '✓ Signature Valid';
+                        document.getElementById('verifyResultTitle').style.color = 'var(--success)';
+                    } else {
+                        document.getElementById('verifyResultTitle').textContent = '✗ Invalid Signature';
+                        document.getElementById('verifyResultTitle').style.color = 'var(--error)';
+                    }
+
+                    document.getElementById('verifyRecoveredAddress').textContent = result.recovered_address || 'N/A';
+                    document.getElementById('verifyAuthorDID').textContent = result.post_id ? `Post #${result.post_id}` : 'Unknown';
+                    document.getElementById('verifyResult').classList.add('visible');
+                    document.getElementById('verifyDoneBtn').style.display = 'block';
+
+                    openModal('verifyPostModal');
+                } catch (error) {
+                    console.error('Error verifying post:', error);
+                    this.showNotification('Error', error.message);
+                }
+            },
+
+            async loadPosts(page = 1) {
+                try {
+                    const response = await fetch(`${API_BASE}/posts?page=${page}&limit=${this.state.postsPerPage}`);
+                    const data = await response.json();
+
+                    this.state.posts = data.posts || [];
+                    this.state.currentPage = page;
+
+                    this.renderPosts();
+                    this.renderPagination(data.pages, page);
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                }
+            },
+
+            renderPosts() {
+                const listDiv = document.getElementById('postsList');
+                listDiv.innerHTML = '';
+
+                if (this.state.posts.length === 0) {
+                    listDiv.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 60px 20px;">No posts yet. Be the first to publish!</p>';
+                    return;
+                }
+
+                this.state.posts.forEach((post, index) => {
+                    const authorName = post.author.display_name || 'Anonymous';
+                    const authorInitial = authorName.charAt(0).toUpperCase();
+                    const didShort = post.author_did.substring(0, 12) + '...';
+                    const dateObj = new Date(post.published_at);
+                    const dateStr = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                    const excerpt = post.body.substring(0, 150) + (post.body.length > 150 ? '...' : '');
+                    const colorClass = COLORS[index % COLORS.length];
+
+                    const tagsHtml = post.tags && post.tags.length > 0
+                        ? post.tags.map(tag => `<span class="post-badge">${tag}</span>`).join('')
+                        : '';
+
+                    const verifiedBadge = post.chain_verified
+                        ? '<span class="post-badge post-badge-verified">✓ Verified</span>'
+                        : '';
+
+                    const card = document.createElement('article');
+                    card.className = 'post-card';
+                    card.innerHTML = `
+                        <div class="post-image ${colorClass}"></div>
+                        <div class="post-content">
+                            <div class="post-meta">
+                                <span class="post-date">${dateStr}</span>
+                                ${tagsHtml}
+                                ${verifiedBadge}
+                            </div>
+                            <h2 class="post-title">${post.title}</h2>
+                            <p class="post-excerpt">${excerpt}</p>
+                            <div class="post-footer">
+                                <div class="post-author">
+                                    <div class="post-avatar">${authorInitial}</div>
+                                    <div class="post-author-info">
+                                        <div class="post-author-name">${authorName}</div>
+                                        <div class="post-author-did">${didShort}</div>
+                                    </div>
+                                </div>
+                                <div class="post-actions">
+                                    <a href="#" class="post-verify-link" onclick="app.verifyPost(${post.id}); return false;">Verify</a>
+                                    <a href="post.html?id=${post.id}" class="post-read-link">Read →</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    listDiv.appendChild(card);
+                });
+            },
+
+            renderPagination(pages, currentPage) {
+                const paginationDiv = document.getElementById('pagination');
+                paginationDiv.innerHTML = '';
+
+                if (pages <= 1) return;
+
+                for (let i = 1; i <= pages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                    btn.textContent = i;
+                    btn.onclick = () => this.loadPosts(i);
+                    paginationDiv.appendChild(btn);
+                }
+            },
+
+            async loadStats() {
+                try {
+                    const response = await fetch(`${API_BASE}/stats`);
+                    const stats = await response.json();
+
+                    document.getElementById('statDIDs').textContent = stats.total_dids;
+                    document.getElementById('statPosts').textContent = stats.total_posts;
+                    document.getElementById('statVerified').textContent = stats.verified_posts;
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            },
+
+            // ===== UI HELPERS =====
+            showComposeBar() {
+                document.getElementById('composeBar').classList.add('visible');
+            },
+
+            updateNavBar() {
+                const pill = document.getElementById('didPill');
+                const text = document.getElementById('didPillText');
+                pill.classList.add('visible');
+                text.textContent = this.state.did.substring(0, 15) + '...';
+            },
+
+            showTXProgress(title, steps) {
+                document.getElementById('txProgressTitle').textContent = title;
+                document.getElementById('txResult').classList.remove('visible');
+                document.getElementById('txDoneBtn').style.display = 'none';
+
+                const stepsDiv = document.getElementById('progressSteps');
+                stepsDiv.innerHTML = '';
+
+                for (let i = 0; i < steps; i++) {
+                    const step = document.createElement('div');
+                    step.className = 'progress-step' + (i === 0 ? ' active' : '');
+                    step.innerHTML = `
+                        <div class="step-circle">${i === 0 ? '...' : i + 1}</div>
+                        <div class="step-content">
+                            <div class="step-label">Step ${i + 1}</div>
+                            <div class="step-detail">Processing...</div>
+                        </div>
+                    `;
+                    stepsDiv.appendChild(step);
+                }
+
+                openModal('txProgressModal');
+            },
+
+            showVerifyProgress(postId) {
+                document.getElementById('verifyProgressTitle').textContent = 'Verifying Signature';
+                document.getElementById('verifyResult').classList.remove('visible');
+                document.getElementById('verifyDoneBtn').style.display = 'none';
+
+                const stepsDiv = document.getElementById('verifyProgressSteps');
+                stepsDiv.innerHTML = '';
+
+                const stepLabels = ['Fetching post...', 'Computing hash...', 'Recovering signer...', 'Comparing addresses...'];
+                for (let i = 0; i < 4; i++) {
+                    const step = document.createElement('div');
+                    step.className = 'progress-step' + (i === 0 ? ' active' : '');
+                    step.innerHTML = `
+                        <div class="step-circle">${i === 0 ? '...' : i + 1}</div>
+                        <div class="step-content">
+                            <div class="step-label">${stepLabels[i]}</div>
+                        </div>
+                    `;
+                    stepsDiv.appendChild(step);
+                }
+
+                openModal('verifyPostModal');
+            },
+
+            async simulateStep(stepIndex, duration, type = 'tx') {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const stepsDiv = type === 'verify' 
+                            ? document.getElementById('verifyProgressSteps')
+                            : document.getElementById('progressSteps');
+                        
+                        const steps = stepsDiv.querySelectorAll('.progress-step');
+                        if (steps[stepIndex]) {
+                            steps[stepIndex].classList.remove('active');
+                            steps[stepIndex].classList.add('completed');
+                            const circle = steps[stepIndex].querySelector('.step-circle');
+                            circle.textContent = '✓';
+
+                            if (stepIndex + 1 < steps.length) {
+                                steps[stepIndex + 1].classList.add('active');
+                            }
+                        }
+                        resolve();
+                    }, duration);
+                });
+            },
+
+            showNotification(title, body) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toastTitle').textContent = title;
+                document.getElementById('toastBody').textContent = body;
+                toast.style.display = 'block';
+
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 4000);
+            }
+        };
+
+        // ===== MODAL HELPERS =====
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('visible');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('visible');
+            // Reset forms
+            if (modalId === 'registerDIDModal') {
+                document.getElementById('registerForm').style.display = 'block';
+                document.getElementById('keysDisplay').style.display = 'none';
+                document.getElementById('displayName').value = '';
+                document.getElementById('bio').value = '';
+                document.getElementById('existingDid').value = '';
+                document.getElementById('existingPrivateKey').value = '';
+            }
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeModal(overlay.id);
+                }
+            });
+        });
+
+        // Initialize app on load
+        window.addEventListener('load', () => app.init());
+    </script>
+</body>
+</html>
