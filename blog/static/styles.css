@@ -1,0 +1,142 @@
+:root {
+    --bg: #0b1020;
+    --card: #131a2e;
+    --muted: #94a3b8;
+    --text: #e2e8f0;
+    --accent: #6366f1;
+    --accent-hover: #4f46e5;
+    --border: #25304d;
+    --danger: #ef4444;
+    --success: #22c55e;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #17203a 0%, var(--bg) 50%);
+    color: var(--text);
+    font-family: Inter, Segoe UI, Arial, sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+.topbar {
+    max-width: 980px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.layout {
+    max-width: 980px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.card {
+    background: linear-gradient(180deg, #131a2e 0%, #10172b 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.feed {
+    max-width: 980px;
+    margin: 16px auto 0;
+}
+
+label {
+    display: block;
+    margin: 10px 0 6px;
+    font-size: 0.9rem;
+}
+
+input,
+textarea,
+button {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #0f1629;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+button {
+    margin-top: 12px;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: var(--accent-hover);
+}
+
+button.ghost {
+    width: auto;
+    margin-top: 0;
+    background: transparent;
+    border: 1px solid var(--border);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.status {
+    margin-top: 10px;
+    min-height: 20px;
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+}
+
+.status.error {
+    color: var(--danger);
+}
+
+.status.success {
+    color: var(--success);
+}
+
+.posts {
+    display: grid;
+    gap: 12px;
+}
+
+.post {
+    background: #0e1527;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.post h3 {
+    margin: 0 0 6px;
+}
+
+.meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 860px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}

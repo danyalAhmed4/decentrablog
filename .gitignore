@@ -1,48 +1,7 @@
-# Dependencies
-node_modules/
-__pycache__/
-*.pyc
-.venv/
-venv/
-env/
-ENV/
+/.venv
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+DIDRegistry.abi.json
 
-# Environment
-.env
-.env.local
-.env.*.local
+__pycache__
 
-# Build artifacts
-artifacts/
-cache/
-dist/
-build/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
-# OS
-Thumbs.db
-.DS_Store
-
-# Testing
-.coverage
-htmlcov/
-
-# Frontend
-node_modules/.cache/
+blog.db

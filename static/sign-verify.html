@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DID Sign & Verify</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="register.html">Register</a>
+            <a href="sign-verify.html">Sign & Verify</a>
+        </div>
+
+        <h1>Sign Challenge & Verify</h1>
+
+        <div class="field">
+            <label for="did">DID</label>
+            <input id="did" type="text" placeholder="did:custom:..." />
+        </div>
+
+        <div class="field">
+            <label for="privateKey">Private Key</label>
+            <textarea id="privateKey" placeholder="0x..."></textarea>
+        </div>
+
+        <button id="verifyBtn">Sign & Verify</button>
+
+        <div id="verifyResult" class="result"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+    <script src="sign-verify.js"></script>
+</body>
+</html>

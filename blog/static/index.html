@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DID Blog</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <header class="topbar">
+        <h1>DID Blog</h1>
+        <button id="logoutBtn" class="ghost" hidden>Logout</button>
+    </header>
+
+    <main class="layout">
+        <section class="card" id="authCard">
+            <h2>Login with DID</h2>
+            <p class="muted">Sign a challenge message with your private key to authenticate.</p>
+
+            <label for="didInput">DID</label>
+            <input id="didInput" type="text" placeholder="did:custom:..." />
+
+            <label for="privateKeyInput">Private Key</label>
+            <textarea id="privateKeyInput" placeholder="0x..."></textarea>
+
+            <button id="loginBtn">Login with DID</button>
+            <div id="authStatus" class="status"></div>
+        </section>
+
+        <section class="card" id="composerCard" hidden>
+            <h2>Create Blog Post</h2>
+            <p id="welcomeText" class="muted"></p>
+
+            <label for="titleInput">Title</label>
+            <input id="titleInput" type="text" placeholder="My first DID post" />
+
+            <label for="contentInput">Content</label>
+            <textarea id="contentInput" placeholder="Write your post..."></textarea>
+
+            <button id="publishBtn">Publish</button>
+            <div id="postStatus" class="status"></div>
+        </section>
+    </main>
+
+    <section class="feed card">
+        <h2>Recent Posts</h2>
+        <div id="postsList" class="posts"></div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+    <script src="/static/main.js"></script>
+</body>
+</html>

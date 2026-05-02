@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DID Register</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="register.html">Register</a>
+            <a href="sign-verify.html">Sign & Verify</a>
+        </div>
+
+        <h1>Register Identity</h1>
+
+        <div class="field">
+            <label for="name">Name</label>
+            <input id="name" type="text" placeholder="Alice" />
+        </div>
+
+        <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="alice@example.com" />
+        </div>
+
+        <button id="registerBtn">Register</button>
+
+        <div id="registerResult" class="result"></div>
+    </div>
+
+    <script src="register.js"></script>
+</body>
+</html>
